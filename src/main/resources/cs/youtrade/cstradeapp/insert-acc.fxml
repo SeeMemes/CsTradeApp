@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="308.0" prefWidth="261.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cs.youtrade.cstradeapp.InsertAccController">
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <Label fx:id="usernameLabel" layoutX="14.0" layoutY="74.0" prefHeight="17.0" prefWidth="67.0" text="Username:" />
+    <TextField fx:id="usernameField" layoutX="92.0" layoutY="70.0" prefWidth="149.0" />
+
+    <Label fx:id="passwordLabel" layoutX="14.0" layoutY="120.0" prefHeight="17.0" prefWidth="67.0" text="Password:" />
+    <PasswordField fx:id="passwordField" layoutX="92.0" layoutY="116.0" />
+
+    <Label fx:id="apiKeyLabel" layoutX="14.0" layoutY="164.0" prefHeight="17.0" prefWidth="67.0" text="API Key:" />
+    <TextField fx:id="apiKeyField" layoutX="92.0" layoutY="160.0" />
+
+    <Label fx:id="filePathLabel" layoutX="14.0" layoutY="210.0" prefHeight="17.0" prefWidth="67.0" text="File Path:" />
+    <PasswordField fx:id="filePathField" editable="false" layoutX="92.0" layoutY="206.0" prefHeight="25.0" prefWidth="149.0" />
+    <Button fx:id="browseButton" layoutX="92.0" layoutY="231.0" onAction="#browseFile" text="Browse" />
+
+    <Label fx:id="errField" alignment="CENTER" contentDisplay="CENTER" layoutX="84.0" layoutY="286.0" prefHeight="25.0" prefWidth="93.0" textAlignment="CENTER" textFill="RED" />
+
+    <Button layoutX="200.0" layoutY="311.0" onAction="#saveAndClose" text="Save" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+</AnchorPane>
