@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import cs.youtrade.cstradeapp.InsertAccController;
+import cs.youtrade.cstradeapp.storage.UserData;
 import in.dragonbra.javasteam.enums.EResult;
 import in.dragonbra.javasteam.steam.authentication.*;
 import in.dragonbra.javasteam.steam.handlers.steamunifiedmessages.SteamUnifiedMessages;
@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
+import java.util.Random;
 import java.util.concurrent.CancellationException;
 
 public class SteamSessionService implements Runnable{
@@ -29,16 +30,12 @@ public class SteamSessionService implements Runnable{
     private CallbackManager manager;
     private SteamUser steamUser;
     private boolean isRunning;
-    private final String user;
-    private final String pass;
-    private String accessToken;
-    private String refreshToken;
+    private final UserData userData;
     private final SteamGuardCodeService guardCodeService;
 
-    public SteamSessionService(String user, String pass, SteamGuardCodeService guardCodeService) {
-        this.user = user;
-        this.pass = pass;
-        this.guardCodeService = guardCodeService;
+    public SteamSessionService(UserData userData) {
+        this.userData = userData;
+        this.guardCodeService = new SteamGuardCodeService(userData.getSharedSecret());
     }
 
     @Override
@@ -69,11 +66,11 @@ public class SteamSessionService implements Runnable{
     }
 
     private void onConnected(ConnectedCallback callback) {
-        System.out.println("Connected to Steam! Logging in " + user + "...");
+        System.out.println("Connected to Steam! Logging in " + userData.getuName() + "...");
 
         AuthSessionDetails authDetails = new AuthSessionDetails();
-        authDetails.username = user;
-        authDetails.password = pass;
+        authDetails.username = userData.getuName();
+        authDetails.password = userData.getpWord();
         authDetails.persistentSession = false;
         authDetails.authenticator = guardCodeService;
 
@@ -91,19 +88,16 @@ public class SteamSessionService implements Runnable{
 
             // Set LoginID to a non-zero value if you have another client connected using the same account,
             // the same private ip, and same public ip.
-            details.setLoginID(149);
+            details.setLoginID(new Random().nextInt(10000) + 1);
 
             steamUser.logOn(details);
 
             // This is not required, but it is possible to parse the JWT access token to see the scope and expiration date.
             // parseJsonWebToken(pollResponse.accessToken, "AccessToken");
             // parseJsonWebToken(pollResponse.refreshToken, "RefreshToken");
-            accessToken = pollResponse.getAccessToken();
-            refreshToken = pollResponse.getRefreshToken();
+            userData.setAccessToken(pollResponse.getAccessToken());
+            userData.setRefreshToken(pollResponse.getRefreshToken());
         } catch (Exception e) {
-            e.printStackTrace();
-
-            // List a couple of exceptions that could be important to handle.
             if (e instanceof AuthenticationException) {
                 System.out.println("An Authentication error has occurred.");
             }

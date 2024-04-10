@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainWindowController {
+
     @FXML
     protected void onOpenInsertAccForm() {
         try {
@@ -19,6 +20,7 @@ public class MainWindowController {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Add account");
+                stage.setResizable(false);
 
                 insertAccController.setMainWindowController(this);
                 insertAccController.setLoginFormOpen(true);

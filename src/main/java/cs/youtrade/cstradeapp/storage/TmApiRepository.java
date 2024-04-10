@@ -8,38 +8,50 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TmApiRepository {
     private final static Logger log = LoggerFactory.getLogger(TmApiRepository.class);
+    private static Map<String, UserData> keys;
     private static final String PATH = "./data";
     private static final String FILENAME = "./data/api_keys.json";
 
-    public static List<UserData> loadApiKeys() {
+    public static Map<String, UserData> loadApiKeys() {
         Gson gson = new Gson();
-        Type listType = new TypeToken<ArrayList<UserData>>(){}.getType();
-        JsonArray json = loadJsonFromFile();
+        Type listType = new TypeToken<HashMap<String, UserData>>(){}.getType();
+        JsonObject json = loadJsonFromFile();
         return gson.fromJson(json, listType);
     }
 
-    public static void saveApiKey(UserData data) {
-        List<UserData> dataList = loadApiKeys();
-        dataList.add(data);
-        saveDataToFile(dataList);
+    public static void saveApiKey(String uName, UserData data) {
+        loadOrCreateKeys();
+        keys.put(uName, data);
+        saveDataToFile();
     }
 
-    private static JsonArray loadJsonFromFile() {
-        JsonArray jsonArray = new JsonArray();
+    private static void loadOrCreateKeys() {
+        if (keys == null) {
+            keys = loadApiKeys();
+        }
+        if (keys == null) {
+            keys = new HashMap<>();
+        }
+    }
+
+    private static JsonObject loadJsonFromFile() {
+        JsonObject jsonObject = new JsonObject();
         File file = new File(FILENAME);
         try {
             if (!file.exists()) {
                 new File(PATH).mkdir();
                 file.createNewFile();
+                saveDataToFile(jsonObject);
             } else {
                 JsonReader reader = new JsonReader(new FileReader(file));
-                jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
+                jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
             }
+            return jsonObject;
         } catch (FileNotFoundException e) {
             log.error("Couldn't find \"" + FILENAME + "\": " + e.getMessage());
         } catch (IOException | JsonSyntaxException e) {
@@ -50,13 +62,13 @@ public class TmApiRepository {
                 log.error("Couldn't delete file. Error message: " + e.getMessage());
             }
         }
-        return jsonArray;
+        return jsonObject;
     }
 
-    public static void saveDataToFile(List<UserData> apiKeyMap) {
+    public static void saveDataToFile() {
         try (FileWriter writer = new FileWriter(FILENAME)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(apiKeyMap, writer);
+            gson.toJson(keys, writer);
         } catch (IOException e) {
             log.error("Couldn't save JSON: " + e.getMessage());
         }
@@ -69,5 +81,13 @@ public class TmApiRepository {
         } catch (IOException e) {
             log.error("Couldn't save JSON: " + e.getMessage());
         }
+    }
+
+    public static Map<String, UserData> getKeys() {
+        return keys;
+    }
+
+    public static void setKeys(Map<String, UserData> keys) {
+        TmApiRepository.keys = keys;
     }
 }

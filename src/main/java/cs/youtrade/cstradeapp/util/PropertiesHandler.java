@@ -1,7 +1,5 @@
 package cs.youtrade.cstradeapp.util;
 
-import cs.youtrade.cstradeapp.InsertAccController;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;

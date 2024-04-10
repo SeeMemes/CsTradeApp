@@ -14,10 +14,13 @@ module cs.youtrade.cstradeapp {
     requires com.google.gson;
     requires org.slf4j;
     requires annotations;
+    requires org.apache.httpcomponents.httpasyncclient;
+
 
     opens cs.youtrade.cstradeapp to javafx.fxml, com.google.gson;
     exports cs.youtrade.cstradeapp;
     exports cs.youtrade.cstradeapp.storage;
     opens cs.youtrade.cstradeapp.storage to javafx.fxml, com.google.gson;
     opens cs.youtrade.cstradeapp.storage.steamauth to com.google.gson;
+    opens cs.youtrade.cstradeapp.util to com.google.gson;
 }
