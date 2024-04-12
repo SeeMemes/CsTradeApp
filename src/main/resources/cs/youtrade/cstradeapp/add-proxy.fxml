@@ -3,24 +3,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="205.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cs.youtrade.cstradeapp.AddProxyController">
+<AnchorPane prefHeight="205.0" prefWidth="250.0" stylesheets="@styles/index.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cs.youtrade.cstradeapp.AddProxyController">
 
-    <!-- Поле для вывода ошибок -->
-    <Label fx:id="errorLabel" layoutX="50.0" layoutY="10.0" textFill="RED"/>
+    <Label fx:id="errorLabel" layoutX="43.0" layoutY="6.0" prefHeight="17.0" prefWidth="206.0" textFill="RED" />
 
-    <!-- Поле для ввода IP-адреса -->
-    <TextField fx:id="ipAddressTextField" layoutX="50.0" layoutY="35.0" promptText="IP-адрес"/>
+    <TextField fx:id="ipAddressTextField" layoutX="40.0" layoutY="35.0" promptText="IP-адрес" />
 
-    <!-- Поле для ввода порта -->
-    <TextField fx:id="portTextField" layoutX="50.0" layoutY="70.0" promptText="Порт"/>
+    <TextField fx:id="portTextField" layoutX="40.0" layoutY="70.0" promptText="Порт" />
 
-    <!-- Поле для ввода имени пользователя -->
-    <TextField fx:id="usernameTextField" layoutX="50.0" layoutY="105.0" promptText="Имя пользователя"/>
+    <TextField fx:id="usernameTextField" layoutX="40.0" layoutY="105.0" promptText="Имя пользователя" />
 
-    <!-- Поле для ввода пароля -->
-    <PasswordField fx:id="passwordField" layoutX="50.0" layoutY="140.0" promptText="Пароль"/>
+    <PasswordField fx:id="passwordField" layoutX="40.0" layoutY="140.0" promptText="Пароль" />
 
-    <!-- Кнопка для сохранения -->
-    <Button layoutX="87.5" layoutY="175.0" onAction="#saveButtonClicked" text="Сохранить" />
+    <Button layoutX="72.0" layoutY="175.0" onAction="#saveButtonClicked" text="Сохранить" />
 
 </AnchorPane>

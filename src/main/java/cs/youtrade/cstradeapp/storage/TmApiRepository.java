@@ -3,25 +3,32 @@ package cs.youtrade.cstradeapp.storage;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 
 public class TmApiRepository {
     private final static Logger log = LoggerFactory.getLogger(TmApiRepository.class);
-    private static Map<String, UserData> keys;
+    private static ObservableMap<String, UserData> keys;
     private static final String PATH = "./data";
     private static final String FILENAME = "./data/api_keys.json";
 
-    public static Map<String, UserData> loadApiKeys() {
+    public static ObservableMap<String, UserData> loadApiKeys() {
         Gson gson = new Gson();
-        Type listType = new TypeToken<HashMap<String, UserData>>(){}.getType();
+        Type mapType = new TypeToken<Map<String, UserData>>() {
+        }.getType();
         JsonObject json = loadJsonFromFile();
-        return gson.fromJson(json, listType);
+        Map<String, UserData> map = gson.fromJson(json, mapType);
+        if (map == null) {
+            return FXCollections.observableHashMap();
+        } else {
+            return FXCollections.observableMap(map);
+        }
     }
 
     public static void saveApiKey(String uName, UserData data) {
@@ -30,12 +37,17 @@ public class TmApiRepository {
         saveDataToFile();
     }
 
+    public static void removeUser(String uName) {
+        keys.remove(uName);
+        saveDataToFile();
+    }
+
     private static void loadOrCreateKeys() {
         if (keys == null) {
             keys = loadApiKeys();
         }
         if (keys == null) {
-            keys = new HashMap<>();
+            keys = FXCollections.observableHashMap();
         }
     }
 
@@ -57,8 +69,7 @@ public class TmApiRepository {
         } catch (IOException | JsonSyntaxException e) {
             if (file.delete()) {
                 log.error("Save is broken. Deleting because: " + e.getMessage());
-            }
-            else {
+            } else {
                 log.error("Couldn't delete file. Error message: " + e.getMessage());
             }
         }
@@ -74,7 +85,7 @@ public class TmApiRepository {
         }
     }
 
-    public static void saveDataToFile(JsonObject jsonObject) {
+    private static void saveDataToFile(JsonObject jsonObject) {
         try (FileWriter writer = new FileWriter(FILENAME)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(jsonObject, writer);
@@ -83,11 +94,11 @@ public class TmApiRepository {
         }
     }
 
-    public static Map<String, UserData> getKeys() {
+    public static ObservableMap<String, UserData> getKeys() {
         return keys;
     }
 
-    public static void setKeys(Map<String, UserData> keys) {
+    public static void setKeys(ObservableMap<String, UserData> keys) {
         TmApiRepository.keys = keys;
     }
 }

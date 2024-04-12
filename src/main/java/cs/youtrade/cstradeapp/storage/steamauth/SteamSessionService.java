@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import cs.youtrade.cstradeapp.storage.UserData;
+import cs.youtrade.cstradeapp.util.ProxyModel;
 import in.dragonbra.javasteam.enums.EResult;
+import in.dragonbra.javasteam.networking.steam3.ProtocolTypes;
+import in.dragonbra.javasteam.networking.steam3.WebSocketConnection;
 import in.dragonbra.javasteam.steam.authentication.*;
 import in.dragonbra.javasteam.steam.handlers.steamunifiedmessages.SteamUnifiedMessages;
 import in.dragonbra.javasteam.steam.handlers.steamuser.LogOnDetails;
@@ -16,6 +19,9 @@ import in.dragonbra.javasteam.steam.steamclient.SteamClient;
 import in.dragonbra.javasteam.steam.steamclient.callbackmgr.CallbackManager;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
+import in.dragonbra.javasteam.steam.steamclient.configuration.SteamConfiguration;
+import in.dragonbra.javasteam.steam.steamclient.configuration.SteamConfigurationBuilder;
+import in.dragonbra.javasteam.util.ProxyWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +46,19 @@ public class SteamSessionService implements Runnable{
 
     @Override
     public void run() {
-        steamClient = new SteamClient();
+        ProxyModel proxyModel = userData.getProxyModel();
+        /*
+        if (proxyModel != null) {
+            SteamConfiguration configuration = SteamConfiguration.create(builder ->
+                    builder.withProtocolTypes(ProtocolTypes.WEB_SOCKET)
+                            .withWebProxy(new ProxyWrapper(proxyModel.getHostname(), proxyModel.getPort(), proxyModel.getUserName(), proxyModel.getPassword()))
+                            );
+
+            steamClient = new SteamClient(configuration);
+        } else {
+         */
+            steamClient = new SteamClient();
+        //}
 
         manager = new CallbackManager(steamClient);
 

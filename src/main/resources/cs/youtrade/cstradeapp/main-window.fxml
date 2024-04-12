@@ -5,14 +5,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="352.0" prefWidth="468.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cs.youtrade.cstradeapp.MainWindowController">
+<VBox alignment="TOP_CENTER" prefHeight="352.0" prefWidth="468.0" spacing="20.0"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cs.youtrade.cstradeapp.MainWindowController"
+      stylesheets="@styles/index.css">
+
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
     <VBox>
-        <Button onAction="#onOpenInsertAccForm" prefHeight="137.0" prefWidth="176.0" text="Hello!">
+        <Button onAction="#onOpenInsertAccForm" text="Add Account">
             <font>
-                <Font name="Bell MT" size="12.0" />
-            </font></Button>
+                <Font name="Bell MT" size="12.0"/>
+            </font>
+        </Button>
     </VBox>
+    <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+        <content>
+            <VBox fx:id="buttonContainer" spacing="10.0" styleClass="mainVBox"/>
+        </content>
+    </ScrollPane>
 </VBox>

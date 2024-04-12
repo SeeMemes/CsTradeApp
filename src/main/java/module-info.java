@@ -20,6 +20,7 @@ module cs.youtrade.cstradeapp {
     opens cs.youtrade.cstradeapp to javafx.fxml, com.google.gson;
     exports cs.youtrade.cstradeapp;
     exports cs.youtrade.cstradeapp.storage;
+    exports cs.youtrade.cstradeapp.util;
     opens cs.youtrade.cstradeapp.storage to javafx.fxml, com.google.gson;
     opens cs.youtrade.cstradeapp.storage.steamauth to com.google.gson;
     opens cs.youtrade.cstradeapp.util to com.google.gson;
