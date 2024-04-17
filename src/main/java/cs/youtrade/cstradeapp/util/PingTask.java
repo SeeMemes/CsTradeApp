@@ -26,7 +26,8 @@ public class PingTask implements Runnable {
         ObservableMap<String, UserData> keys = TmApiRepository.getKeys();
         keys.forEach((key, userData) -> {
             try {
-                TmCommunicationService.pingTM(userData);
+                if (userData.isWorks())
+                    TmCommunicationService.pingTM(userData, false);
             } catch (TmPingException | ExecutionException e) {
                 log.error("Error occurred while pinging TM: " + e.getMessage());
                 e.printStackTrace();

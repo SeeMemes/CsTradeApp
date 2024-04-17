@@ -27,7 +27,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class InsertAccController {
     private final static Logger log = LoggerFactory.getLogger(InsertAccController.class);
@@ -151,18 +149,19 @@ public class InsertAccController {
                         .setAccessToken(accessToken)
                         .setRefreshToken(refreshToken);
                 try {
-                    TmCommunicationService.pingTM(userData);
+                    TmCommunicationService.pingTM(userData, true);
+
+                    TmApiRepository.saveApiKey(username, userData);
+                    errField.setText("");
+                    Stage stage = (Stage) usernameField.getScene().getWindow();
+                    instance.setLoginFormOpen(false);
+
+                    stage.close();
                 } catch (TmPingException e) {
                     log.error("Error occurred while pinging TM: " + e.getMessage());
+                    errField.setText(e.getMessage());
                     e.printStackTrace();
                 }
-
-                TmApiRepository.saveApiKey(username, userData);
-                errField.setText("");
-                Stage stage = (Stage) usernameField.getScene().getWindow();
-                instance.setLoginFormOpen(false);
-
-                stage.close();
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 String errorText = "Cannot authenticate by given credentials.";

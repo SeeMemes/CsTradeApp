@@ -18,10 +18,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class MainWindowController {
+    private final static Logger log = LoggerFactory.getLogger(MainWindowController.class);
     private PingTask pingTask;
     @FXML
     private ScrollPane scrollPane;
@@ -76,7 +79,17 @@ public class MainWindowController {
         UserData userData = TmApiRepository.getKeys().get(key);
 
         Button userButton = new Button(key);
+        userButton.getStyleClass().removeAll("button");
+        userButton.getStyleClass().add(userData.isWorks() ? "button-green" : "button-red");
         userButton.setMinWidth(120);
+        userButton.setOnAction(event -> {
+            userData.setWorks(!userData.isWorks());
+            log.info(userData.getuName() + " - works: " + userData.isWorks());
+            userButton.getStyleClass().removeAll(userData.isWorks() ? "button-red" : "button-green");
+            userButton.getStyleClass().add(userData.isWorks() ? "button-green" : "button-red");
+            TmApiRepository.saveDataToFile();
+        });
+
         HBox.setHgrow(userButton, Priority.ALWAYS);
         Button addProxyButton = createAddProxyButton(userData);
         addProxyButton.setMaxWidth(60);

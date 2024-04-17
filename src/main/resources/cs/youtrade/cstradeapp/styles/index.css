@@ -24,6 +24,44 @@
     -fx-max-height: 50px;
 }
 
+.button-red {
+    -fx-background-color: #f38888;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 12px;
+    -fx-border-radius: 3px;
+    -fx-min-height: 30px;
+    -fx-max-width: 200px;
+    -fx-max-height: 50px;
+}
+
+.button-red:hover {
+    -fx-background-color: #e55868;
+    -fx-border-color: #bd4954;
+}
+
+.button-red:pressed {
+    -fx-background-color: #bd4954;
+}
+
+.button-green {
+    -fx-background-color: #8bf388;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 12px;
+    -fx-border-radius: 3px;
+    -fx-min-height: 30px;
+    -fx-max-width: 200px;
+    -fx-max-height: 50px;
+}
+
+.button-green:hover {
+    -fx-background-color: #72e558;
+    -fx-border-color: #5ebd49;
+}
+
+.button-green:pressed {
+    -fx-background-color: #5ebd49;
+}
+
 .button:hover {
     -fx-background-color: #e0e0e0;
     -fx-border-color: #cccccc;
@@ -49,13 +87,17 @@
 }
 
 .delete-button {
-    -fx-background-color: #fc6073;
+    -fx-background-color: #f38888;
     -fx-padding: 5px;
 }
 
 .delete-button:hover {
     -fx-background-color: #e55868;
     -fx-border-color: #bd4954;
+}
+
+.delete-button:pressed {
+    -fx-background-color: #bd4954;
 }
 
 .delete-icon {

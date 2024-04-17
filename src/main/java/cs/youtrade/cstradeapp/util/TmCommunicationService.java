@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 public class TmCommunicationService {
     private final static Logger log = LoggerFactory.getLogger(TmCommunicationService.class);
 
-    public static void pingTM(UserData userData) throws ExecutionException {
+    public static void pingTM(UserData userData, boolean firstTime) throws ExecutionException {
         try (CloseableHttpClient client =
                      (userData.getProxyModel() == null) ?
                              setConnection() :
@@ -50,15 +50,20 @@ public class TmCommunicationService {
                         String responseBody = new String(content.readAllBytes(), StandardCharsets.UTF_8);
                         PingAnswerTemplate pingAnswer = gson.fromJson(responseBody, PingAnswerTemplate.class);
 
-                        if (!pingAnswer.success) {
-                            log.info("BAD API KEY [" + userData.getuName() + "]. Generating new access key");
-                            SteamSessionService steamSessionService = new SteamSessionService(userData);
-                            steamSessionService.run();
+                        if (!pingAnswer.success && !pingAnswer.message().equals("too early for pong")) {
+                            if (!firstTime) {
+                                log.info("BAD API KEY [" + userData.getuName() + "]. Generating new access key");
+                                SteamSessionService steamSessionService = new SteamSessionService(userData);
+                                steamSessionService.run();
+                            } else {
+                                throw new TmPingException("Couldn't get access_token on log in");
+                            }
                         } else {
                             log.info("\nPINGED [" + userData.getuName() + "]:" +
                                     "\n     online: " + pingAnswer.online +
                                     "\n     p2p: " + pingAnswer.p2p +
-                                    "\n     steamApiKey: " + pingAnswer.steamApiKey
+                                    "\n     steamApiKey: " + pingAnswer.steamApiKey +
+                                    "\n     message: " + pingAnswer.message()
                             );
                         }
                     }
