@@ -20,6 +20,7 @@ import in.dragonbra.javasteam.steam.steamclient.SteamClient;
 import in.dragonbra.javasteam.steam.steamclient.callbackmgr.CallbackManager;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
+import in.dragonbra.javasteam.util.crypto.CryptoHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,9 +31,11 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
 public class InsertAccController {
@@ -128,7 +131,7 @@ public class InsertAccController {
                 this.manager.subscribe(ConnectedCallback.class, callback -> {
                     try {
                         onConnected(callback);
-                    } catch (AuthenticationException e) {
+                    } catch (AuthenticationException | NoSuchPaddingException | NoSuchAlgorithmException e) {
                         throw new RuntimeException(e);
                     }
                 });
@@ -178,7 +181,7 @@ public class InsertAccController {
         }
     }
 
-    private void onConnected(ConnectedCallback callback) throws AuthenticationException {
+    private void onConnected(ConnectedCallback callback) throws AuthenticationException, NoSuchPaddingException, NoSuchAlgorithmException {
         System.out.println("Connected to Steam! Logging in " + username + "...");
 
         AuthSessionDetails authDetails = new AuthSessionDetails();

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import cs.youtrade.cstradeapp.storage.TmApiRepository;
 import cs.youtrade.cstradeapp.storage.UserData;
 import cs.youtrade.cstradeapp.util.ProxyModel;
 import in.dragonbra.javasteam.enums.EResult;
@@ -115,6 +116,7 @@ public class SteamSessionService implements Runnable{
             // parseJsonWebToken(pollResponse.refreshToken, "RefreshToken");
             userData.setAccessToken(pollResponse.getAccessToken());
             userData.setRefreshToken(pollResponse.getRefreshToken());
+            TmApiRepository.saveDataToFile();
         } catch (Exception e) {
             if (e instanceof AuthenticationException) {
                 System.out.println("An Authentication error has occurred.");

@@ -1,6 +1,7 @@
 package cs.youtrade.cstradeapp.util;
 
 import com.google.gson.Gson;
+import cs.youtrade.cstradeapp.storage.TmApiRepository;
 import cs.youtrade.cstradeapp.storage.UserData;
 import cs.youtrade.cstradeapp.storage.steamauth.SteamSessionService;
 import org.apache.http.HttpEntity;
