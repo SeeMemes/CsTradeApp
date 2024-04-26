@@ -3,6 +3,8 @@ package cs.youtrade.cstradeapp.storage;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import cs.youtrade.cstradeapp.util.LocalDateTimeDeserializer;
+import cs.youtrade.cstradeapp.util.LocalDateTimeSerializer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class TmApiRepository {
@@ -17,9 +20,12 @@ public class TmApiRepository {
     private static ObservableMap<String, UserData> keys;
     private static final String PATH = "./data";
     private static final String FILENAME = "./data/api_keys.json";
+    private static final GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
 
     public static ObservableMap<String, UserData> loadApiKeys() {
-        Gson gson = new Gson();
+        Gson gson = gsonBuilder.create();
         Type mapType = new TypeToken<Map<String, UserData>>() {
         }.getType();
         JsonObject json = loadJsonFromFile();
@@ -61,7 +67,11 @@ public class TmApiRepository {
                 saveDataToFile(jsonObject);
             } else {
                 JsonReader reader = new JsonReader(new FileReader(file));
-                jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                try {
+                    jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                } catch (IllegalStateException e) {
+                    jsonObject = new JsonObject();
+                }
             }
             return jsonObject;
         } catch (FileNotFoundException e) {
@@ -78,7 +88,7 @@ public class TmApiRepository {
 
     public static void saveDataToFile() {
         try (FileWriter writer = new FileWriter(FILENAME)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = gsonBuilder.create();
             gson.toJson(keys, writer);
         } catch (IOException e) {
             log.error("Couldn't save JSON: " + e.getMessage());
@@ -87,7 +97,7 @@ public class TmApiRepository {
 
     private static void saveDataToFile(JsonObject jsonObject) {
         try (FileWriter writer = new FileWriter(FILENAME)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = gsonBuilder.create();
             gson.toJson(jsonObject, writer);
         } catch (IOException e) {
             log.error("Couldn't save JSON: " + e.getMessage());

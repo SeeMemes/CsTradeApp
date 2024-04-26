@@ -1,6 +1,10 @@
 package cs.youtrade.cstradeapp.storage;
 
 import cs.youtrade.cstradeapp.util.ProxyModel;
+import org.bouncycastle.asn1.x509.Time;
+
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalField;
 
 public class UserData {
     private final String uName;
@@ -9,6 +13,7 @@ public class UserData {
     private final String sharedSecret;
     private String accessToken;
     private String refreshToken;
+    private long updateTime;
     private boolean works;
     private ProxyModel proxyModel;
 
@@ -18,6 +23,7 @@ public class UserData {
         this.tmApiKey = tmApiKey;
         this.sharedSecret = sharedSecret;
         this.works = true;
+        this.updateTime = System.currentTimeMillis();
     }
 
     public String getuName() {
@@ -64,6 +70,14 @@ public class UserData {
 
     public ProxyModel getProxyModel() {
         return proxyModel;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
     }
 
     public void setProxyModel(ProxyModel proxyModel) {

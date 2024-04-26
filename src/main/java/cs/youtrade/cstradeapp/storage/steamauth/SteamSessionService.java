@@ -8,8 +8,6 @@ import cs.youtrade.cstradeapp.storage.TmApiRepository;
 import cs.youtrade.cstradeapp.storage.UserData;
 import cs.youtrade.cstradeapp.util.ProxyModel;
 import in.dragonbra.javasteam.enums.EResult;
-import in.dragonbra.javasteam.networking.steam3.ProtocolTypes;
-import in.dragonbra.javasteam.networking.steam3.WebSocketConnection;
 import in.dragonbra.javasteam.steam.authentication.*;
 import in.dragonbra.javasteam.steam.handlers.steamunifiedmessages.SteamUnifiedMessages;
 import in.dragonbra.javasteam.steam.handlers.steamuser.LogOnDetails;
@@ -20,12 +18,10 @@ import in.dragonbra.javasteam.steam.steamclient.SteamClient;
 import in.dragonbra.javasteam.steam.steamclient.callbackmgr.CallbackManager;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
-import in.dragonbra.javasteam.steam.steamclient.configuration.SteamConfiguration;
-import in.dragonbra.javasteam.steam.steamclient.configuration.SteamConfigurationBuilder;
-import in.dragonbra.javasteam.util.ProxyWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.CancellationException;
@@ -114,9 +110,11 @@ public class SteamSessionService implements Runnable{
             // This is not required, but it is possible to parse the JWT access token to see the scope and expiration date.
             // parseJsonWebToken(pollResponse.accessToken, "AccessToken");
             // parseJsonWebToken(pollResponse.refreshToken, "RefreshToken");
-            userData.setAccessToken(pollResponse.getAccessToken());
-            userData.setRefreshToken(pollResponse.getRefreshToken());
-            TmApiRepository.saveDataToFile();
+            String access_token = pollResponse.getAccessToken();
+            String refresh_token = pollResponse.getRefreshToken();
+
+            userData.setAccessToken(access_token).setRefreshToken(refresh_token);
+            userData.setUpdateTime(System.currentTimeMillis());
         } catch (Exception e) {
             if (e instanceof AuthenticationException) {
                 System.out.println("An Authentication error has occurred.");
@@ -130,6 +128,7 @@ public class SteamSessionService implements Runnable{
 
     private void onDisconnected(DisconnectedCallback callback) {
         System.out.println("Disconnected from Steam");
+        TmApiRepository.saveDataToFile();
 
         isRunning = false;
     }

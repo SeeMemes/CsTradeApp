@@ -1,7 +1,6 @@
 package cs.youtrade.cstradeapp.util;
 
 import com.google.gson.Gson;
-import cs.youtrade.cstradeapp.storage.TmApiRepository;
 import cs.youtrade.cstradeapp.storage.UserData;
 import cs.youtrade.cstradeapp.storage.steamauth.SteamSessionService;
 import org.apache.http.HttpEntity;
@@ -53,9 +52,15 @@ public class TmCommunicationService {
 
                         if (!pingAnswer.success && !pingAnswer.message().equals("too early for pong")) {
                             if (!firstTime) {
-                                log.info("BAD API KEY [" + userData.getuName() + "]. Generating new access key");
-                                SteamSessionService steamSessionService = new SteamSessionService(userData);
-                                steamSessionService.run();
+                                long timeGap = System.currentTimeMillis() - userData.getUpdateTime();
+                                log.info("BAD API KEY [" + userData.getuName() + "]"
+                                        + "\nHour Difference: " + timeGap/(1000 * 60)
+                                        + "\nMessage: " + pingAnswer.message
+                                        + "\nGenerating new access key");
+                                if (timeGap > 24 * 60 * 60 * 1000) {
+                                    SteamSessionService steamSessionService = new SteamSessionService(userData);
+                                    steamSessionService.run();
+                                }
                             } else {
                                 throw new TmPingException("Couldn't get access_token on log in");
                             }

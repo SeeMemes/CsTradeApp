@@ -16,6 +16,7 @@ public class PingTask implements Runnable {
     private final static Logger log = LoggerFactory.getLogger(PingTask.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final MainWindowController mainWindowController;
+    private final ObservableMap<String, UserData> keys = TmApiRepository.getKeys();
 
     public PingTask(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
@@ -23,7 +24,6 @@ public class PingTask implements Runnable {
 
     @Override
     public void run() {
-        ObservableMap<String, UserData> keys = TmApiRepository.getKeys();
         keys.forEach((key, userData) -> {
             try {
                 if (userData.isWorks())
