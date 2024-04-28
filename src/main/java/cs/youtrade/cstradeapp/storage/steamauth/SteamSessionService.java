@@ -113,8 +113,8 @@ public class SteamSessionService implements Runnable{
             String access_token = pollResponse.getAccessToken();
             String refresh_token = pollResponse.getRefreshToken();
 
-            userData.setAccessToken(access_token).setRefreshToken(refresh_token);
-            userData.setUpdateTime(System.currentTimeMillis());
+            TmApiRepository.getKeys().get(userData.getuName())
+                    .setAccessToken(access_token).setRefreshToken(refresh_token).setUpdateTime(System.currentTimeMillis());
         } catch (Exception e) {
             if (e instanceof AuthenticationException) {
                 System.out.println("An Authentication error has occurred.");

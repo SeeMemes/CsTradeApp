@@ -54,10 +54,10 @@ public class TmCommunicationService {
                             if (!firstTime) {
                                 long timeGap = System.currentTimeMillis() - userData.getUpdateTime();
                                 log.info("BAD API KEY [" + userData.getuName() + "]"
-                                        + "\nHour Difference: " + timeGap/(1000 * 60)
-                                        + "\nMessage: " + pingAnswer.message
-                                        + "\nGenerating new access key");
+                                        + "\nHour Difference: " + timeGap/(1000 * 60 * 60)
+                                        + "\nMessage: " + pingAnswer.message);
                                 if (timeGap > 24 * 60 * 60 * 1000) {
+                                    log.info("Generating new access key");
                                     SteamSessionService steamSessionService = new SteamSessionService(userData);
                                     steamSessionService.run();
                                 }
