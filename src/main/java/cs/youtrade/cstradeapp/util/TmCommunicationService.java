@@ -50,16 +50,17 @@ public class TmCommunicationService {
                         String responseBody = new String(content.readAllBytes(), StandardCharsets.UTF_8);
                         PingAnswerTemplate pingAnswer = gson.fromJson(responseBody, PingAnswerTemplate.class);
 
-                        if (!pingAnswer.success && !pingAnswer.message().equals("too early for pong")) {
+                        if (!pingAnswer.success && pingAnswer.message().equals("invalid_access_token")) {
                             if (!firstTime) {
                                 long timeGap = System.currentTimeMillis() - userData.getUpdateTime();
                                 log.info("BAD API KEY [" + userData.getuName() + "]"
                                         + "\nHour Difference: " + timeGap/(1000 * 60 * 60)
                                         + "\nMessage: " + pingAnswer.message);
-                                if (timeGap > 24 * 60 * 60 * 1000) {
+                                if (timeGap > 24 * 60 * 60 * 1000 || timeGap < 1000 * 60 * 60) {
                                     log.info("Generating new access key");
                                     SteamSessionService steamSessionService = new SteamSessionService(userData);
                                     steamSessionService.run();
+                                    pingTM(userData, firstTime);
                                 }
                             } else {
                                 throw new TmPingException("Couldn't get access_token on log in");
